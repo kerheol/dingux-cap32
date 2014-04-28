@@ -62,17 +62,16 @@ static void cleanup_output(void)
     }
   }
 #endif
-  cpu_deinit();
+
 #if defined(GP2X_MODE) || defined(WIZ_MODE)
   chdir("/usr/gp2x");
   execl("/usr/gp2x/gp2xmenu", "/usr/gp2x/gp2xmenu", NULL);
 #endif
 }
 
-int 
+int
 main(int argc, char *argv[])
 {
-  cpu_init();
 
 #ifndef NO_STDIO_REDIRECT
   /* Redirect standard output and standard error. */

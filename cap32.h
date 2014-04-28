@@ -39,7 +39,6 @@
 #define u32 unsigned int
 
 #include "gp2x_psp.h"
-#include "gp2x_cpu.h"
 #include "psp_sdl.h"
 
 #define MAX_PATH 256
@@ -305,6 +304,7 @@ typedef struct {
    char          cpc_cht_path[MAX_PATH + 1];
    char          cpc_disk_path[MAX_PATH + 1];
    char          cpc_snap_path[MAX_PATH + 1];
+   char          cpc_bios_path[MAX_PATH + 1];
    char          cpc_save_name[MAX_PATH+1];
    CPC_save_t    cpc_save_state[CPC_MAX_SAVE_STATE];
    CPC_cheat_t   cpc_cheat[CPC_MAX_CHEAT];

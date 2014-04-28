@@ -25,7 +25,6 @@ BINARIES_PATH	= /opt/gcw0-toolchain/usr/bin
 SDL_CONFIG		= $(ZERODEV_PATH)/bin/sdl-config
 
 OBJS = 	gp2x_psp.o \
-		cpugcw0.o \
 		cap32.o \
 		crtc.o \
 		fdc.o \
@@ -65,7 +64,7 @@ MORE_CFLAGS = -I. -I$(ZERODEV_PATH)/usr/include -DLSB_FIRST \
  -DMPU_JZ4740 -mips32 -O3 -fomit-frame-pointer -fsigned-char -ffast-math \
  -DGCW0_MODE  \
  -DCAP32_VERSION=\"$(CAP32_VERSION)\" \
-#-DNO_STDIO_REDIRECT
+-DNO_STDIO_REDIRECT
 
 # -fsigned-char -ffast-math -fomit-frame-pointer \
 # -fexpensive-optimizations -fno-strength-reduce  \
@@ -79,7 +78,7 @@ LDFLAGS = -s
 LIBS += -L$(ZERODEV_PATH)/lib \
 -lSDL \
 -lSDL_image \
-../libcpccat/libcpccat.a  \
+libcpccat/libcpccat.a  \
 -lpng -lz -lm -lpthread  -ldl
 
 #libcpccat/libcpccat.a  \ # old

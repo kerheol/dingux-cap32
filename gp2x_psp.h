@@ -169,7 +169,6 @@ typedef struct gp2xCtrlData SceCtrlData;
 
   extern int  gp2xCtrlReadBufferPositive(gp2xCtrlData* c, int v);
   extern int  gp2xCtrlPeekBufferPositive(gp2xCtrlData* c, int v);
-  extern void gp2xPowerSetClockFrequency(int freq);
 
 # define scePowerSetClockFrequency(A,B,C) gp2xPowerSetClockFrequency((A))
 

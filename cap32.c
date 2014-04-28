@@ -952,7 +952,7 @@ snapshot_load_sna(char *FileName)
                emulator_reset(false);
                return ERR_SNA_CPC_TYPE;
             }
-            strncpy(chPath, CPC.rom_path, sizeof(chPath)-2);
+            strncpy(chPath, CPC.cpc_bios_path, sizeof(chPath)-2);
             strcat(chPath, "/");
             strncat(chPath, chROMFile[dwModel], sizeof(chPath)-1 - strlen(chPath)); // path to the required ROM image
             if ((a_file = fopen(chPath, "rb")) != NULL) {
@@ -1152,7 +1152,7 @@ snapshot_load_sna_buffer(char *zip_buffer, int zip_size)
                emulator_reset(false);
                return ERR_SNA_CPC_TYPE;
             }
-            strncpy(chPath, CPC.rom_path, sizeof(chPath)-2);
+            strncpy(chPath, CPC.cpc_bios_path, sizeof(chPath)-2);
             strcat(chPath, "/");
             strncat(chPath, chROMFile[dwModel], sizeof(chPath)-1 - strlen(chPath)); // path to the required ROM image
             if ((a_file = fopen(chPath, "rb")) != NULL) {
@@ -1346,7 +1346,7 @@ snapshot_load_snz(char *FileName)
                emulator_reset(false);
                return ERR_SNA_CPC_TYPE;
             }
-            strncpy(chPath, CPC.rom_path, sizeof(chPath)-2);
+            strncpy(chPath, CPC.cpc_bios_path, sizeof(chPath)-2);
             strcat(chPath, "/");
             strncat(chPath, chROMFile[dwModel], sizeof(chPath)-1 - strlen(chPath)); // path to the required ROM image
             if ((a_file = fopen(chPath, "rb")) != NULL) {
@@ -2292,7 +2292,7 @@ emulator_patch_ROM(void)
    FILE* a_file;
    char chPath[MAX_PATH + 1];
 
-   strncpy(chPath, CPC.rom_path, sizeof(chPath)-2);
+   strncpy(chPath, CPC.cpc_bios_path, sizeof(chPath)-2);
    strcat(chPath, "/");
    strncat(chPath, chROMFile[CPC.model], sizeof(chPath)-1 - strlen(chPath));
    if ((a_file = fopen(chPath, "r")) != NULL) { // load CPC OS + Basic
@@ -2424,7 +2424,7 @@ emulator_init(void)
      if (CPC.rom_file[iRomNum][0]) { // is a ROM image specified for this slot?
         pchRomData = (char*)malloc( sizeof(char) * 16384); // allocate 16K
         memset(pchRomData, 0, 16384); // clear memory
-        strncpy(chPath, CPC.rom_path, sizeof(chPath)-2);
+        strncpy(chPath, CPC.cpc_bios_path, sizeof(chPath)-2);
         strcat(chPath, "/");
         strncat(chPath, CPC.rom_file[iRomNum], sizeof(chPath)-1 - strlen(chPath));
         if ((a_file = fopen(chPath, "rb")) != NULL) { // attempt to open the ROM image
@@ -3114,15 +3114,6 @@ cap32_save_settings(void)
   return error;
 }
 
-void
-myPowerSetClockFrequency(int cpu_clock)
-{
-  if (CPC.cpc_current_clock != cpu_clock) {
-    gp2xPowerSetClockFrequency(cpu_clock);
-    CPC.cpc_current_clock = cpu_clock;
-  }
-}
-
 int
 loc_cap32_load_settings(char *FileName)
 {
@@ -3207,8 +3198,6 @@ loc_cap32_load_settings(char *FileName)
   }
   cap32_change_render_mode(CPC.cpc_render_mode);
 
-  myPowerSetClockFrequency(CPC.psp_cpu_clock);
-
   return 0;
 }
 
@@ -3226,7 +3215,7 @@ cap32_default_settings()
   CPC.snd_stereo = 1;
   CPC.snd_volume = 80;
 
-  CPC.psp_cpu_clock       = GP2X_DEF_EMU_CLOCK;
+  CPC.psp_cpu_clock       = 0;
   CPC.psp_skip_max_frame  = 0;
   CPC.cpc_render_mode     = CPC_RENDER_FAST;
   CPC.cpc_display_border = 1;
@@ -3234,7 +3223,6 @@ cap32_default_settings()
   CPC.cpc_reset_load_disk = 1;
 
   cap32_change_render_mode(CPC.cpc_render_mode);
-  myPowerSetClockFrequency(CPC.psp_cpu_clock);
 }
 
 int
@@ -3297,8 +3285,6 @@ cap32_initialize()
   strcpy(CPC.rom_file[7], "amsdos.rom"); // insert AMSDOS in slot 7 if the config file does not exist yet
 
   //LUDO:
-  CPC.psp_cpu_clock  = GP2X_DEF_EMU_CLOCK;
-  myPowerSetClockFrequency(CPC.psp_cpu_clock);
   CPC.psp_skip_cur_frame = 0;
   CPC.psp_skip_max_frame = 0;
 
@@ -3312,62 +3298,80 @@ cap32_initialize()
   strcpy(CPC.psp_screenshot_path, chPath);
 
 #if defined(GCW0_MODE)
-   static char *dir1, *dir2, *dir3, *dir4, *dir5, *dir6, *dir7, *dir8, *dir9, *dir10, *dir11;
-   dir1 = malloc(strlen(getenv("HOME")) + 24);
-   sprintf(dir1, "%s/.cap32/", getenv("HOME"));
-   sprintf(CPC.cpc_home_dir, "%s/.cap32/", getenv("HOME"));
-   mkdir(dir1, 0777);
-   free (dir1);
-   dir2 = malloc(strlen(getenv("HOME")) + 24);
-   sprintf(dir2, "%s/.cap32/save/", getenv("HOME"));
-   strcpy(CPC.cpc_save_path, dir2);
-   mkdir(dir2, 0777);
-   free (dir2);
-   dir3 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir3, "%s/.cap32/set/", getenv("HOME"));
-   strcpy(CPC.cpc_set_path, dir2);
-   mkdir(dir3, 0777);
-   free (dir3);
-   dir4 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir4, "%s/.cap32/txt/", getenv("HOME"));
-   strcpy(CPC.cpc_txt_path, dir2);
-   mkdir(dir4, 0777);
-   free (dir4);
-   dir5 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir5, "%s/.cap32/kbd/", getenv("HOME"));
-   strcpy(CPC.cpc_kbd_path, dir5);
-   mkdir(dir5, 0777);
-   free (dir5);
-   dir6 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir6, "%s/.cap32/joy/", getenv("HOME"));
-   strcpy(CPC.cpc_joy_path, dir6);
-   mkdir(dir6, 0777);
-   free (dir6);
-   dir7 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir7, "%s/.cap32/cht/", getenv("HOME"));
-   strcpy(CPC.cpc_cht_path, dir7);
-   mkdir(dir7, 0777);
-   free (dir7);
-   dir8 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir8, "%s/.cap32/scr/", getenv("HOME"));
-   strcpy(CPC.psp_screenshot_path, dir8);
-   mkdir(dir8, 0777);
-   free (dir8);
-   dir9 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir9, "%s/.cap32/rom/", getenv("HOME"));
-   //strcpy(CPC.rom_path, dir9);
-   mkdir(dir9, 0777);
-   free (dir9);
-   dir10 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir10, "%s/.cap32/disk/", getenv("HOME"));
-   strcpy(CPC.cpc_disk_path, dir10);
-   mkdir(dir10, 0777);
-   free (dir10);
-   dir11 = malloc(strlen(getenv("HOME")) + 28);
-   sprintf(dir11, "%s/.cap32/snap/", getenv("HOME"));
-   strcpy(CPC.cpc_snap_path, dir11);
-   mkdir(dir11, 0777);
-   free (dir11);
+   static char *tmp_directory, *home_name;
+
+   home_name = malloc(sizeof(char)*6 + 1);
+   strcpy(home_name,".cap32");
+
+
+   sprintf(CPC.cpc_home_dir, "%s/%s/", getenv("HOME"), home_name);
+   mkdir(CPC.cpc_home_dir, 0777);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/save/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_save_path, tmp_directory);
+   mkdir(CPC.cpc_save_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/set/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_set_path, tmp_directory);
+   mkdir(CPC.cpc_set_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/txt/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_txt_path, tmp_directory);
+   mkdir(CPC.cpc_txt_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/kbd/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_kbd_path, tmp_directory);
+   mkdir(CPC.cpc_kbd_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/joy/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_joy_path, tmp_directory);
+   mkdir(CPC.cpc_joy_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/cht/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_cht_path, tmp_directory);
+   mkdir(CPC.cpc_cht_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/scr/", getenv("HOME"), home_name);
+   strcpy(CPC.psp_screenshot_path, tmp_directory);
+   mkdir(CPC.psp_screenshot_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/rom/", getenv("HOME"), home_name);
+   mkdir(CPC.rom_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/bios/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_bios_path, tmp_directory);
+   mkdir(CPC.cpc_bios_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/disk/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_disk_path, tmp_directory);
+   mkdir(CPC.cpc_disk_path, 0777);
+   free (tmp_directory);
+
+   tmp_directory = malloc(MAX_PATH + 1);
+   sprintf(tmp_directory, "%s/%s/snap/", getenv("HOME"), home_name);
+   strcpy(CPC.cpc_snap_path, tmp_directory);
+   mkdir(CPC.cpc_snap_path, 0777);
+   free (tmp_directory);
+
 #endif;
 
   CPC.psp_screenshot_id = 0;

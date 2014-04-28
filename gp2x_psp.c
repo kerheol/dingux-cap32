@@ -14,7 +14,6 @@
 
 #include "global.h"
 #include "gp2x_psp.h"
-#include "gp2x_cpu.h"
 
 /* For internal use only */
 # define GP2X_CTRL_UPRIGHT    0x10000
@@ -188,16 +187,6 @@ gp2xCtrlReadBufferPositive(gp2xCtrlData* c, int v)
   return 1;
 }
 
-
-void
-gp2xPowerSetClockFrequency(int freq)
-{
-#if defined(GP2X_MODE) || defined(WIZ_MODE) || defined(DINGUX_MODE) || defined(GCW0_MODE)
-  if ((freq >= GP2X_MIN_CLOCK) && (freq <= GP2X_MAX_CLOCK)) {
-    cpu_set_clock(freq);
-  }
-# endif
-}
 
 #if defined(DINGUX_MODE) || defined(GCW0_MODE)
 # if 0
