@@ -2481,7 +2481,7 @@ void
 audio_update(void *userdata, byte *stream, int len)
 {
   if (pbSndStream) {
-# if defined(DINGUX_MODE) || defined(GCW0_MODE)
+# if defined(DINGUX_MODE)
     uint *src = (uint *)pbSndStream;
     uint *tgt = stream;
     len = len >> 2;
@@ -2532,7 +2532,7 @@ audio_init(void)
    desired.format   = CPC.snd_bits ? AUDIO_S16LSB : AUDIO_S8;
 # endif
    desired.channels = CPC.snd_stereo+1;
-   desired.samples  = audio_align_samples(desired.freq / 50);
+   desired.samples  = desired.freq / 50;
    desired.callback = audio_update;
    desired.userdata = NULL;
 

@@ -350,7 +350,7 @@ void SetAYRegister(int Num, byte Value)
 
 inline void Synthesizer_Logic_Q(void)
 {
-   word tmp; 
+   word tmp;
    Ton_Counter_A.Hi++;
    if (Ton_Counter_A.Hi >= *(word *)&PSG.RegisterAY.TonALo) {
       Ton_Counter_A.Hi = 0;

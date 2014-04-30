@@ -92,7 +92,7 @@ extern SDL_Surface *back_surface;
   static int cpc_speed             = DEF_SPEED_SETTING;
   static int psp_cpu_clock         = 0;
   static int cpc_skip_fps          = 0;
-  static int cpc_ram_size          = 128;
+  static int cpc_ram_size          = 576;
   static int psp_explore_disk      = 0;
   static int cpc_reset_load_disk   = 1;
 

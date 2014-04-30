@@ -156,7 +156,7 @@
     CPC_CUR_RIGHT       , /*  KBD_RIGHT      */
     CPC_CUR_DOWN        , /*  KBD_DOWN       */
     CPC_CUR_LEFT        , /*  KBD_LEFT       */
-    CPC_ENTER           , /*  KBD_TRIANGLE   */
+    CPC_RETURN          , /*  KBD_TRIANGLE   */
     CPC_J0_FIRE2        , /*  KBD_CIRCLE     */
     CPC_J0_FIRE1        , /*  KBD_CROSS      */
     CPC_DEL             , /*  KBD_SQUARE     */
