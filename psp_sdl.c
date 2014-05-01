@@ -30,8 +30,8 @@
   extern unsigned char psp_font_6x10[];
 
   unsigned char *psp_font;
-  int            psp_font_width  = 8; 
-  int            psp_font_height = 8; 
+  int            psp_font_width  = 8;
+  int            psp_font_height = 8;
 
   SDL_Surface *back_surface;
   SDL_Surface *back2_surface;
@@ -72,14 +72,14 @@ loc_psp_debug(char *file, int line, char *message)
     } else {
       current_col = 200;
     }
-    
+
     current_line = 10;
   }
   sprintf(buffer,"%s:%d %s", file, line, message);
   psp_sdl_print(current_col, current_line, buffer, psp_sdl_rgb(0xff,0xff,0xff) );
 }
 
-void 
+void
 psp_sdl_print(int x,int y, char *str, int color)
 {
   int index;
@@ -100,7 +100,7 @@ psp_sdl_clear_screen(int color)
 {
   int x; int y;
   u16 *vram = psp_sdl_get_vram_addr(0,0);
-  
+
   for (y = 0; y < PSP_SDL_SCREEN_HEIGHT; y++) {
     for (x = 0; x < PSP_SDL_SCREEN_WIDTH; x++) {
       vram[x + (y*PSP_LINE_SIZE)] = color;
@@ -129,8 +129,8 @@ psp_sdl_clear_blit(int color)
   }
 }
 
-void 
-psp_sdl_draw_rectangle(int x, int y, int w, int h, int border, int mode) 
+void
+psp_sdl_draw_rectangle(int x, int y, int w, int h, int border, int mode)
 {
   u16 *vram = (u16 *)psp_sdl_get_vram_addr(x, y);
   int xo, yo;
@@ -157,7 +157,7 @@ psp_sdl_draw_rectangle(int x, int y, int w, int h, int border, int mode)
   }
 }
 
-void 
+void
 psp_sdl_fill_rectangle(int x, int y, int w, int h, int color, int mode)
 {
   u16 *vram  = (u16 *)psp_sdl_get_vram_addr(x, y);
@@ -196,7 +196,7 @@ psp_sdl_get_back2_color(int x, int y)
   return color;
 }
 
-void 
+void
 psp_sdl_back2_rectangle(int x, int y, int w, int h)
 {
   if (! back2_surface) {
@@ -214,7 +214,7 @@ psp_sdl_back2_rectangle(int x, int y, int w, int h)
   }
 }
 
-void 
+void
 psp_sdl_put_char(int x, int y, int color, int bgcolor, uchar c, int drawfg, int drawbg)
 {
   int cx;
@@ -239,7 +239,7 @@ psp_sdl_put_char(int x, int y, int color, int bgcolor, uchar c, int drawfg, int 
   }
 }
 
-void 
+void
 psp_sdl_back2_put_char(int x, int y, int color, uchar c)
 {
   int cx;
@@ -281,7 +281,7 @@ psp_convert_utf8_to_iso_8859_1(unsigned char c1, unsigned char c2)
 }
 
 
-void 
+void
 psp_sdl_fill_print(int x,int y,const char *str, int color, int bgcolor)
 {
   int index;
@@ -442,7 +442,7 @@ psp_sdl_save_png(SDL_Surface* my_surface, char* filename)
   FILE *fp = fopen(filename,"wb");
 
   if(!fp) return 0;
-  
+
   png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
                                                 NULL,
                                                 NULL,
@@ -487,12 +487,12 @@ psp_sdl_save_png(SDL_Surface* my_surface, char* filename)
       u16 v = p[x];
 
       *b++ = ((v & systemRedMask  ) >> systemRedShift  ) << 3; // R
-      *b++ = ((v & systemGreenMask) >> systemGreenShift) << 2; // G 
+      *b++ = ((v & systemGreenMask) >> systemGreenShift) << 2; // G
       *b++ = ((v & systemBlueMask ) >> systemBlueShift ) << 3; // B
     }
     p += my_surface->pitch / 2;
     png_write_row(png_ptr,writeBuffer);
-     
+
     b = writeBuffer;
   }
 
@@ -634,7 +634,7 @@ psp_sdl_save_thumb_png(SDL_Surface* my_surface, char* filename)
 
 int
 psp_sdl_load_thumb_png(SDL_Surface* my_surface, char* filename)
-{ 
+{
   return psp_sdl_load_png( my_surface, filename);
 }
 
@@ -663,7 +663,7 @@ psp_sdl_init(void)
 
   psp_sdl_select_font_6x10();
 
-  back_surface=SDL_SetVideoMode(PSP_SDL_SCREEN_WIDTH,PSP_SDL_SCREEN_HEIGHT, 16 , 
+  back_surface=SDL_SetVideoMode(PSP_SDL_SCREEN_WIDTH,PSP_SDL_SCREEN_HEIGHT, 16 ,
                                 SDL_SWSURFACE);
 
   if ( !back_surface) {
@@ -671,7 +671,7 @@ psp_sdl_init(void)
   }
 
 
-  blit_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, 
+  blit_surface = SDL_CreateRGBSurface(SDL_SWSURFACE,
     CPC_SCR_WIDTH, CPC_SCR_HEIGHT,
     back_surface->format->BitsPerPixel,
     back_surface->format->Rmask,
@@ -689,15 +689,15 @@ psp_sdl_init(void)
   /* Create surface for save state */
   int Index = 0;
   for (Index = 0; Index < CPC_MAX_SAVE_STATE; Index++) {
-    CPC.cpc_save_state[Index].surface = 
-       SDL_CreateRGBSurface(SDL_SWSURFACE, 
+    CPC.cpc_save_state[Index].surface =
+       SDL_CreateRGBSurface(SDL_SWSURFACE,
                             SNAP_WIDTH, SNAP_HEIGHT,
                             back_surface->format->BitsPerPixel,
                             back_surface->format->Rmask,
                             back_surface->format->Gmask,
                             back_surface->format->Bmask, 0);
   }
-  save_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, 
+  save_surface = SDL_CreateRGBSurface(SDL_SWSURFACE,
                             SNAP_WIDTH, SNAP_HEIGHT,
                             back_surface->format->BitsPerPixel,
                             back_surface->format->Rmask,
@@ -731,8 +731,8 @@ psp_sdl_select_font_6x10()
 }
 
 void
-psp_sdl_set_palette(SDL_Color* c) 
+psp_sdl_set_palette(SDL_Color* c)
 {
-	SDL_SetPalette(back_surface, SDL_LOGPAL | SDL_PHYSPAL, c, 0, 32); 
+	SDL_SetPalette(back_surface, SDL_LOGPAL | SDL_PHYSPAL, c, 0, 32);
 }
 
