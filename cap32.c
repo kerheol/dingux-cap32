@@ -22,6 +22,7 @@
 #include <malloc.h>
 #include <zlib.h>
 #include <dirent.h>
+#include <assert.h>
 #include "SDL.h"
 #include "global.h"
 #include "psp_sdl.h"
@@ -81,6 +82,8 @@
 #define MSG_PAUSED               42
 #define MSG_TAP_PLAY             43
 #define MSG_TAP_STOP             44
+
+#define DEFAULT_DISK_PATH         1
 
 #define MAX_LINE_LEN 256
 
@@ -194,6 +197,54 @@ t_disk_format disk_format[MAX_DISK_FORMAT] = {
          SetAYRegister(PSG.reg_select, psg_data); \
       } \
    } \
+}
+
+char** str_split(char* a_str, const char a_delim)
+{
+    char** result    = 0;
+    size_t count     = 0;
+    char* tmp        = a_str;
+    char* last_comma = 0;
+    char delim[2];
+    delim[0] = a_delim;
+    delim[1] = 0;
+
+    /* Count how many elements will be extracted. */
+    while (*tmp)
+    {
+        if (a_delim == *tmp)
+        {
+            count++;
+            last_comma = tmp;
+        }
+        tmp++;
+    }
+
+    /* Add space for trailing token. */
+    count += last_comma < (a_str + strlen(a_str) - 1);
+
+    /* Add space for terminating null string so caller
+       knows where the list of returned strings ends. */
+    count++;
+
+    result = malloc(sizeof(char*) * count);
+
+    if (result)
+    {
+        size_t idx  = 0;
+        char* token = strtok(a_str, delim);
+
+        while (token)
+        {
+            assert(idx < count);
+            *(result + idx++) = strdup(token);
+            token = strtok(0, delim);
+        }
+        assert(idx == count - 1);
+        *(result + idx) = 0;
+    }
+
+    return result;
 }
 
 void ga_init_banking (void)
@@ -2202,6 +2253,13 @@ cap32_disk_load(char *FileName, char drive, int zip_format)
       cap32_joy_load();
       cap32_load_cheat();
       cap32_load_settings();
+
+      char *file_name = (char*)calloc(1, MAX_PATH+1);
+      char *file_path = (char*)calloc(1, MAX_PATH+1);
+      file_name = (strrchr(FileName, '/'))+1;
+      memcpy(file_path, FileName, strlen(FileName) - strlen(file_name));
+      file_path[strlen(file_path) + 1] = '\0';
+      loc_cap32_save_paths(DEFAULT_DISK_PATH, file_path);
     }
   }
 
@@ -3114,6 +3172,63 @@ cap32_save_settings(void)
   return error;
 }
 
+
+int
+loc_cap32_save_paths(int path_type, char path[])
+{
+
+  char  FileName[MAX_PATH+1];
+  int   error;
+  FILE* FileDesc;
+
+  error = 0;
+
+  snprintf(FileName, MAX_PATH, "%s/set/default_paths.set", CPC.cpc_home_dir);
+
+  FileDesc = fopen(FileName, "w");
+
+  if (FileDesc != (FILE *)0 ) {
+    fprintf(FileDesc, "%d=%s\n", path_type, path);
+    fclose(FileDesc);
+  } else {
+    error = 1;
+  }
+
+  return error;
+}
+
+int
+loc_cap32_load_paths()
+{
+   char *line;
+   FILE* fp;
+   char  file_name[MAX_PATH+1];
+   int len = 100;
+   int read;
+   char **options;
+
+   snprintf(file_name, MAX_PATH, "%s/set/default_paths.set", CPC.cpc_home_dir);
+   fp = fopen(file_name, "r");
+   if (fp == (FILE *)0 ) return 0;
+   line = malloc(MAX_PATH*2);
+
+   while ((read = getline(&line, &len, fp)) != -1) {
+      options = str_split(line, '=');
+      if(options){
+         if(atoi(options[0]) == DEFAULT_DISK_PATH){
+            strcpy(CPC.cpc_disk_path, options[1]);
+         }
+      }
+   }
+
+   if(line){
+      free(line);
+   }
+
+   return 0;
+
+}
+
 int
 loc_cap32_load_settings(char *FileName)
 {
@@ -3373,6 +3488,8 @@ cap32_initialize()
    free (tmp_directory);
 
 #endif;
+
+   loc_cap32_load_paths();
 
   CPC.psp_screenshot_id = 0;
   CPC.cpc_render_mode = CPC_RENDER_ULTRA;

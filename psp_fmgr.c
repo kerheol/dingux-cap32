@@ -173,8 +173,11 @@ getDir(const char *path)
   DIR *fd;
   int b=0;
   int format = 0;
+  int i = 0;
 
   nfiles = 0;
+
+  strtok(path, "\n");
 
   if(strcmp(path,"/")){
     strcpy(files[nfiles].d_name,"..");
@@ -184,13 +187,19 @@ getDir(const char *path)
     b=1;
   }
   fd = opendir(path);
+
   if (! fd) return;
+
   while(nfiles<GP2X_FMGR_MAX_ENTRY){
     memset(&files[nfiles], 0x00, sizeof(struct dirent));
     struct dirent *file_entry = readdir(fd);
-    if (! file_entry) break;
+    if (! file_entry){
+      break;
+    }
     memcpy(&files[nfiles], file_entry, sizeof(struct dirent));
-    if(files[nfiles].d_name[0] == '.') continue;
+    if(files[nfiles].d_name[0] == '.'){
+      continue;
+    }
 
     if(files[nfiles].d_type == DT_DIR) {
       strcat(files[nfiles].d_name, "/");
@@ -360,6 +369,7 @@ static  int sel=0;
   nfiles = 0;
 
   strcpy(path, pszStartPath);
+
   getDir(path);
 
   last_time = 0;
