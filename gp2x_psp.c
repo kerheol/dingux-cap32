@@ -45,6 +45,7 @@ gp2xConvertMaskToButtons(int Mask)
   if (Mask & GP2X_CTRL_UPRIGHT) Buttons |= GP2X_CTRL_UP|GP2X_CTRL_RIGHT;
   if (Mask & GP2X_CTRL_DOWNLEFT ) Buttons |= GP2X_CTRL_DOWN|GP2X_CTRL_LEFT;
   if (Mask & GP2X_CTRL_DOWNRIGHT) Buttons |= GP2X_CTRL_DOWN|GP2X_CTRL_RIGHT;
+
   return Buttons;
 }
 
@@ -115,6 +116,7 @@ gp2xCtrlPeekBufferPositive(gp2xCtrlData* c, int v)
       ButtonRelease = 1;
     }
 #endif
+
     switch (Event) {
       case GP2X_UP        : Mask = GP2X_CTRL_UP;
       break;
@@ -173,7 +175,9 @@ gp2xCtrlPeekBufferPositive(gp2xCtrlData* c, int v)
     c->TimeStamp = loc_CurrTimeStamp;
   }
 
+#if !defined(GCW0_MODE)
   gp2xTreatVolume(c);
+#endif
 
   return (c->Buttons != 0);
 }
@@ -222,7 +226,7 @@ dingux_setvolume(int involume)
 int
 gp2xInitSoundVolume()
 {
-# if defined(DINGUX_MODE) || defined(GCW0_MODE)
+# if defined(DINGUX_MODE)
   dingux_setvolume( loc_Volume );
 # endif
 }
@@ -238,7 +242,7 @@ gp2xDecreaseVolume()
 {
   loc_Volume -= 2;
   if (loc_Volume < 0) loc_Volume = 0;
-# if defined(DINGUX_MODE) || defined(GCW0_MODE)
+# if defined(DINGUX_MODE)
   dingux_setvolume( loc_Volume );
 # endif
 }
@@ -248,7 +252,7 @@ gp2xIncreaseVolume()
 {
   loc_Volume += 2;
   if (loc_Volume > 100) loc_Volume = 100;
-# if defined(DINGUX_MODE) || defined(GCW0_MODE)
+# if defined(DINGUX_MODE)
   dingux_setvolume( loc_Volume );
 # endif
 }

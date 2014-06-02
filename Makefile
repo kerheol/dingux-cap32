@@ -64,7 +64,9 @@ MORE_CFLAGS = -I. -I$(ZERODEV_PATH)/usr/include -DLSB_FIRST \
  -DMPU_JZ4740 -mips32 -O3 -fomit-frame-pointer -fsigned-char -ffast-math \
  -DGCW0_MODE  \
  -DCAP32_VERSION=\"$(CAP32_VERSION)\" \
--DNO_STDIO_REDIRECT
+-DNO_STDIO_REDIRECT \
+-DDOUBLEBUF
+#-DTRIPLEBUF
 
 # -fsigned-char -ffast-math -fomit-frame-pointer \
 # -fexpensive-optimizations -fno-strength-reduce  \

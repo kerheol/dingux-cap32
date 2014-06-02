@@ -26,22 +26,31 @@
 #include "psp_sdl.h"
 #include "psp_danzeff.h"
 
-  extern unsigned char psp_font_8x8[];
-  extern unsigned char psp_font_6x10[];
+extern unsigned char psp_font_8x8[];
+extern unsigned char psp_font_6x10[];
 
-  unsigned char *psp_font;
-  int            psp_font_width  = 8;
-  int            psp_font_height = 8;
+unsigned char *psp_font;
+int            psp_font_width  = 8;
+int            psp_font_height = 8;
 
-  SDL_Surface *back_surface;
-  SDL_Surface *back2_surface;
+SDL_Surface *back_surface;
+SDL_Surface *back2_surface;
 
-  SDL_Surface *background_surface = NULL;
-  SDL_Surface *blit_surface;
-  SDL_Surface *help_surface;
-  SDL_Surface *splash_surface;
-  SDL_Surface *thumb_surface;
-  SDL_Surface *save_surface;
+SDL_Surface *background_surface = NULL;
+SDL_Surface *blit_surface;
+SDL_Surface *help_surface;
+SDL_Surface *splash_surface;
+SDL_Surface *thumb_surface;
+SDL_Surface *save_surface;
+
+#define SDL_DEFAULT_VIDEO_FLAGS SDL_HWSURFACE
+#if defined(DOUBLEBUF)
+#define SDL_VIDEO_FLAGS SDL_DEFAULT_VIDEO_FLAGS | SDL_DOUBLEBUF
+#else
+#if defined(TRIPLEBUF)
+#define SDL_VIDEO_FLAGS SDL_DEFAULT_VIDEO_FLAGS | SDL_TRIPLEBUF
+#endif
+#endif
 
 uint
 psp_sdl_rgb(uchar R, uchar G, uchar B)
@@ -667,7 +676,7 @@ psp_sdl_init(void)
     PSP_SDL_SCREEN_WIDTH,
     PSP_SDL_SCREEN_HEIGHT,
     16 ,
-    SDL_HWSURFACE | SDL_DOUBLEBUF
+    SDL_HWSURFACE | SDL_TRIPLEBUF
   );
 
   if ( !back_surface) {

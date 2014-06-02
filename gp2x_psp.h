@@ -81,29 +81,6 @@ typedef struct gp2xCtrlData SceCtrlData;
 
 #elif defined(DINGUX_MODE) || defined(GCW0_MODE)
 
-# if 0 // original mapping
-#define GP2X_UP              (103)
-#define GP2X_DOWN            (108)
-#define GP2X_LEFT            (105)
-#define GP2X_RIGHT           (106)
-#define GP2X_UPLEFT          (-1)
-#define GP2X_UPRIGHT         (-2)
-#define GP2X_DOWNLEFT        (-3)
-#define GP2X_DOWNRIGHT       (-4)
-
-#define GP2X_A               (29)
-#define GP2X_B               (56)
-#define GP2X_X               (57)
-#define GP2X_Y               (42)
-#define GP2X_L               (15)
-#define GP2X_R               (14)
-#define GP2X_FIRE            (-5)
-#define GP2X_START           (28)
-#define GP2X_SELECT          (1)
-#define GP2X_VOLUP           (-6)
-#define GP2X_VOLDOWN         (-7)
-# endif
-
 #define GP2X_UP              (103)
 #define GP2X_DOWN            (108)
 #define GP2X_LEFT            (105)
@@ -117,12 +94,12 @@ typedef struct gp2xCtrlData SceCtrlData;
 #define GP2X_R               (14)
 #define GP2X_START           (28)
 #define GP2X_SELECT          ( 1)
+#define GP2X_FIRE            (102)
 
 #define GP2X_UPLEFT          (-1)
 #define GP2X_UPRIGHT         (-2)
 #define GP2X_DOWNLEFT        (-3)
 #define GP2X_DOWNRIGHT       (-4)
-#define GP2X_FIRE            (-5)
 #define GP2X_VOLUP           (-6)
 #define GP2X_VOLDOWN         (-7)
 
@@ -141,17 +118,11 @@ typedef struct gp2xCtrlData SceCtrlData;
 #define GP2X_DOWN           88 //SDLK_KP2
 #define GP2X_DOWNRIGHT      89 //SDLK_KP3
 
-# if 0
-#define GP2X_A              38 //SDLK_a
-#define GP2X_B              56 //SDLK_b
-#define GP2X_X              53 //SDLK_x
-#define GP2X_Y              29 //SDLK_y
-# else
 #define GP2X_A              38 //SDLK_a
 #define GP2X_B              40 //SDLK_d
 #define GP2X_X              53 //SDLK_x
 #define GP2X_Y              25 //SDLK_w
-# endif
+
 #define GP2X_L              46 //SDLK_l
 #define GP2X_R              27 //SDLK_r
 #define GP2X_FIRE           65 //SDLK_SPACE

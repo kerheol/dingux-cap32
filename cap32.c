@@ -2644,7 +2644,7 @@ audio_shutdown(void)
 void
 audio_pause(void)
 {
-   SDL_PauseAudio(1);
+  SDL_PauseAudio(1);
 }
 
 static int
